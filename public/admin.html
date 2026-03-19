@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>管理ページ</title>
+</head>
+<body>
+
+<h1>管理ページ</h1>
+
+<div id="login">
+  <input type="password" id="adminPass" placeholder="パスワードを入力">
+  <button onclick="checkPassword()">ログイン</button>
+</div>
+
+<div id="adminArea" style="display:none;">
+  <h2>📊 成績一覧</h2>
+  <button onclick="deleteAll()">全データ削除</button>
+  <br><br>
+  <div id="scores"></div>
+</div>
+
+<script>
+
+function checkPassword() {
+  const input = document.getElementById("adminPass").value;
+
+  fetch("/admin-login", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ password: input })
+  })
+  .then(response => response.json())
+  .then(data => {
+
+    if (data.success) {
+      document.getElementById("login").style.display = "none";
+      document.getElementById("adminArea").style.display = "block";
+      loadScores();
+    } else {
+      alert("パスワードが違います");
+    }
+
+  });
+}
+
+function loadScores() {
+  fetch("/scores")
+    .then(response => response.json())
+    .then(data => {
+
+      data.sort((a, b) => b.score - a.score);
+
+      const scoresDiv = document.getElementById("scores");
+      scoresDiv.innerHTML = "";
+
+      data.forEach((item, index) => {
+        scoresDiv.innerHTML +=
+          "<p>" + (index + 1) + "位：" +
+          item.username + " - " +
+          item.score + "点</p>";
+      });
+    });
+}
+
+function deleteAll() {
+  if (!confirm("本当に全部削除しますか？")) {
+    return;
+  }
+
+  fetch("/delete-all", {
+    method: "DELETE"
+  })
+  .then(response => response.json())
+  .then(() => {
+    alert("削除しました");
+    location.reload();
+  });
+}
+
+</script>
+</body>
+</html>

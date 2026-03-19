@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <title>クイズアプリ</title>
+
+  <style>
+body {
+  margin: 0;
+  font-family: "Segoe UI", "Hiragino Kaku Gothic ProN", sans-serif;
+  background: #2c3e8e;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+/* 会社名ヘッダー */
+.company-name {
+  position: absolute;
+  top: 30px;
+  font-size: 28px;
+  font-weight: bold;
+  color: white;
+  letter-spacing: 3px;
+}
+
+/* メインカード */
+.container {
+  background: white;
+  padding: 50px;
+  border-radius: 16px;
+  width: 420px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+/* タイトル */
+h1 {
+  margin-bottom: 30px;
+  color: #2c3e8e;
+}
+
+/* 入力欄 */
+input {
+  padding: 12px;
+  width: 80%;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 16px;
+}
+
+/* ボタン */
+button {
+  padding: 12px 25px;
+  margin-top: 15px;
+  border: none;
+  border-radius: 8px;
+  background: #2c3e8e;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* ホバー効果 */
+button:hover {
+  background: #1f2f6b;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+}
+
+/* クイズ選択肢 */
+#choices button {
+  display: block;
+  width: 100%;
+  margin: 10px 0;
+}}
+.company-name {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 28px;
+  font-weight: bold;
+  letter-spacing: 4px;
+  color: white;   /* ←ここが単色 */
+  text-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  z-index: 1000;
+}    body {
+  font-family: 'Poppins', sans-serif;
+  background: #2c3e8e;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+    .container {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+  width: 400px;
+  text-align: center;
+  color: white;
+}
+
+    button {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(45deg, #ff9a9e, #fad0c4);
+  color: #333;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 15px rgba(0,0,0,0.3);
+}
+
+    button:hover {
+      background-color: #2c3e8e;
+    }
+
+    #result {
+      margin-top: 15px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+<div class="company-name">
+  文理スクール
+</div>
+<div class="container">
+
+  <!-- ログイン画面 -->
+  <div id="login">
+    <h1>ログイン</h1>
+    <input type="text" id="username" placeholder="名前を入力">
+    <br><br>
+    <button onclick="startQuiz()">クイズ開始</button>
+  </div>
+
+  <!-- クイズ画面 -->
+  <div id="quiz" style="display:none;">
+    <h1>４択クイズ</h1>
+    <p id="question"></p>
+    <div id="choices"></div>
+    <p id="result"></p>
+  </div>
+
+  <!-- 結果画面 -->
+  <div id="result-screen" style="display:none;">
+    <h1>結果</h1>
+    <p id="final-score"></p>
+    <button onclick="goHome()">最初に戻る</button>
+  </div>
+
+</div>
+<script>
+ let currentQuestion = 0;
+let score = 0;
+
+const questions = [
+  {
+    question: "日本の首都は？",
+    choices: ["大阪", "東京", "名古屋", "福岡"],
+    answer: "東京"
+  },
+  {
+    question: "2 + 2 は？",
+    choices: ["3", "4", "5", "6"],
+    answer: "4"
+  }
+];
+
+function startQuiz() {
+  const username = document.getElementById("username").value;
+
+  if (username === "") {
+    alert("名前を入力してください");
+    return;
+  }
+
+  document.getElementById("login").style.display = "none";
+
+  const quiz = document.getElementById("quiz");
+  quiz.style.display = "block";
+  quiz.classList.add("fade-in");
+
+  loadQuestion();
+}
+
+function loadQuestion() {
+  const q = questions[currentQuestion];
+
+  document.getElementById("question").textContent = q.question;
+
+  const choicesDiv = document.getElementById("choices");
+  choicesDiv.innerHTML = "";
+
+  q.choices.forEach(choice => {
+    const button = document.createElement("button");
+    button.textContent = choice;
+    button.onclick = () => checkAnswer(choice);
+    choicesDiv.appendChild(button);
+  });
+}
+
+function checkAnswer(choice) {
+  const correct = questions[currentQuestion].answer;
+
+  if (choice === correct) {
+    score++;
+  }
+
+  currentQuestion++;
+
+  if (currentQuestion < questions.length) {
+    loadQuestion();
+  } else {
+    // 👇 ここが超重要
+    document.getElementById("quiz").style.display = "none";
+    document.getElementById("result-screen").style.display = "block";
+    document.getElementById("final-score").textContent =
+      "あなたのスコアは " + score + " 点です";
+  }
+}
+function goHome() {
+  currentQuestion = 0;
+  score = 0;
+
+  document.getElementById("result-screen").style.display = "none";
+  document.getElementById("login").style.display = "block";
+}
+</script>
+
+</body>
+</html>
