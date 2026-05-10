@@ -90,6 +90,8 @@ app.delete("/delete-all", (req, res) => {
   fs.writeFileSync("scores.json", JSON.stringify(scores));
   res.json({ message: "削除成功" });
 });
-app.listen(3000, () => {
-  console.log("http://localhost:3000");
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+  console.log("Server started on port " + PORT);
 });
