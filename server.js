@@ -31,7 +31,6 @@ app.post("/upload-questions", upload.single("file"), (req, res) => {
 });
 const session = require("express-session");
 const ADMIN_PASSWORD = "1234";
-const fs = require("fs");
 let scores = [];
 
 if (fs.existsSync("scores.json")) {
