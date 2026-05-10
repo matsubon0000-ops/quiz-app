@@ -1,3 +1,8 @@
+const fs = require("fs");
+
+if (!fs.existsSync("uploads")) {
+  fs.mkdirSync("uploads");
+}
 const multer = require("multer");
 const csv = require("csv-parser");
 const upload = multer({ dest: "uploads/" });
